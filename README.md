@@ -1,286 +1,333 @@
 # StudyFlow
 
-StudyFlow is a backend application for an online learning platform built with **FastAPI**.
+**Платформа для онлайн-обучения с личными кабинетами студентов и преподавателей.**
 
-The platform supports two roles:
+StudyFlow объединяет каталог курсов, регистрацию пользователей и управление обучением в одном приложении. Преподаватели создают и редактируют курсы, а студенты находят интересующие программы и записываются на них.
 
-- 👨‍🏫 Teacher — creates and manages courses.
-- 👨‍🎓 Student — enrolls in courses and views enrolled courses.
+Проект состоит из backend на **FastAPI** и адаптивного frontend на **React + TypeScript**. Клиентская часть подключается к существующему REST API без изменения backend.
 
-This project was created as a portfolio project to demonstrate backend development skills using modern Python technologies.
+## Возможности
 
----
+### Для всех пользователей
 
-# Features
+- Просмотр каталога и описаний курсов.
+- Поиск курсов по названию и сортировка.
+- Просмотр преподавателя и участников курса.
+- Регистрация с выбором роли: студент или преподаватель.
+- Вход по имени пользователя и паролю.
 
-## Authentication
+### Для студентов
 
-- JWT Authentication
-- OAuth2 Password Flow
-- Password hashing
-- Protected endpoints
-- Current user endpoint (`/me`)
+- Запись на курсы.
+- Просмотр своих курсов в разделе «Моё обучение».
+- Выход из курса.
 
-## User
+### Для преподавателей
 
-- Register
-- Login
-- View profile
-- Update profile
-- Delete account
+- Создание курсов с названием и описанием.
+- Просмотр своих программ.
+- Редактирование и удаление собственных курсов.
 
-## Courses
+### Личный кабинет
 
-Teacher can:
+- Просмотр и редактирование имени и имени пользователя.
+- Удаление аккаунта с подтверждением.
+- Выход из системы.
 
-- Create course
-- Update own course
-- Delete own course
+### Интерфейс
 
-Everyone can:
+- Русскоязычный адаптивный дизайн.
+- Состояния загрузки, пустых списков и ошибок.
+- Подтверждение удаления курсов и аккаунта.
+- Обработка истечения сессии.
 
-- View all courses
-- Search courses by title
-- View course details
+> Текущая версия поддерживает управление курсами и записями студентов. Уроки, видео, задания, оценки, сертификаты и отслеживание прогресса пока не реализованы.
 
-## Enrollment
+## Технологии
 
-Student can:
+| Часть проекта | Технологии |
+| --- | --- |
+| Backend | Python, FastAPI, SQLAlchemy, Pydantic v2 |
+| База данных | PostgreSQL |
+| Миграции | Alembic |
+| Авторизация | JWT, OAuth2 Password Flow |
+| Хеширование паролей | pwdlib |
+| Frontend | React, TypeScript, Vite |
+| Интерфейс | CSS, Lucide React |
+| Проверки frontend | TypeScript, встроенный тестовый раннер Node.js |
 
-- Enroll in a course
-- Leave a course
-- View enrolled courses
-
-Everyone can:
-
-- View students enrolled in a course
-
----
-
-# Tech Stack
-
-Backend
-
-- Python 3.13
-- FastAPI
-- SQLAlchemy ORM
-- PostgreSQL
-- Alembic
-- Pydantic v2
-
-Authentication
-
-- JWT
-- OAuth2
-- pwdlib
-
-Development
-
-- Uvicorn
-- Swagger UI
-
----
-
-# Project Structure
-
-```
-app/
-│
-├── api/
-├── crud/
-├── core/
-├── models/
-├── schemas/
-├── enums/
-├── dependencies.py
-└── main.py
-
-alembic/
-
-requirements.txt
-README.md
-```
-
----
-
-# Database
-
-Main entities:
-
-- User
-- Course
-- Enrollment
-
-Relationships
+## Структура проекта
 
 ```text
-Teacher (User)
-      1
-      │
-      │ creates
-      │
-      *
-    Course
-      1
-      │
-      │ has
-      │
-      *
- Enrollment
-      *
-      │
-      │ belongs to
-      │
-      1
-Student (User)
+StudyFlow/
+├── app/
+│   ├── api/              # HTTP-маршруты
+│   ├── core/             # Конфигурация, база данных и безопасность
+│   ├── crud/             # Операции с данными
+│   ├── enums/            # Роли пользователей
+│   ├── models/           # Модели SQLAlchemy
+│   ├── schemas/          # Схемы Pydantic
+│   ├── dependencies.py   # Зависимости FastAPI
+│   └── main.py           # Точка входа backend
+├── alembic/              # Миграции базы данных
+├── frontend/
+│   ├── src/
+│   │   ├── api.ts        # API-клиент и типы данных
+│   │   ├── main.tsx      # Экраны и компоненты приложения
+│   │   └── style.css     # Стили и адаптивная верстка
+│   ├── tests/            # Тесты API-клиента
+│   ├── .env.example      # Пример адреса backend
+│   ├── package.json
+│   └── vite.config.ts    # Настройки сборки и прокси
+├── alembic.ini
+├── requirements.txt
+└── README.md
 ```
 
----
+## Запуск локально
 
-# API Endpoints
+### Требования
 
-## Authentication
+- Python 3.13 — версия, указанная в исходном backend-проекте.
+- Node.js 22.18+ и npm.
+- Запущенный PostgreSQL и отдельная база данных для проекта.
+- Git.
 
-| Method | Endpoint |
-|---------|-----------|
-| POST | `/auth/register` |
-| POST | `/auth/login` |
-
----
-
-## User
-
-| Method | Endpoint |
-|---------|-----------|
-| GET | `/me` |
-| PATCH | `/me` |
-| DELETE | `/me` |
-
----
-
-## Courses
-
-| Method | Endpoint |
-|---------|-----------|
-| POST | `/courses` |
-| GET | `/courses` |
-| GET | `/courses/{id}` |
-| GET | `/courses/title` |
-| PATCH | `/courses/{id}` |
-| DELETE | `/courses/{id}` |
-
----
-
-## Enrollment
-
-| Method | Endpoint |
-|---------|-----------|
-| POST | `/me/courses` |
-| GET | `/me/courses` |
-| DELETE | `/me/courses/{course_id}` |
-| GET | `/courses/{course_id}/students` |
-
----
-
-# Authentication
-
-All protected endpoints require a JWT access token.
-
-```
-Authorization: Bearer <access_token>
-```
-
----
-
-# Getting Started
-
-Clone the repository
+### 1. Получите проект
 
 ```bash
-git clone https://github.com/your_username/StudyFlow.git
+git clone git@github.com:abdugoo/StudyFlow.git
 cd StudyFlow
 ```
 
-Create virtual environment
+Если в клонированной версии ещё нет клиентской части, скопируйте папку `frontend` из полной версии проекта в корень репозитория, рядом с `app` и `requirements.txt`.
+
+Все команды ниже предполагают такую структуру каталогов.
+
+### 2. Подготовьте backend
+
+Создайте виртуальное окружение:
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 ```
 
-Activate
-
-Windows
-
-```bash
-.venv\Scripts\activate
-```
-
-Linux / macOS
+Активируйте его на macOS / Linux:
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install dependencies
+На Windows в PowerShell:
 
-```bash
-pip install -r requirements.txt
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
----
+Установите зависимости из корня проекта:
 
-# Environment Variables
+```bash
+python -m pip install -r requirements.txt
+```
 
-Create `.env`
+### 3. Настройте переменные окружения
 
-```env
-DATABASE_URL=your_database_url
-SECRET_KEY=your_secret_key
+Создайте файл `.env` в корне проекта:
+
+```dotenv
+DATABASE_URL=postgresql+psycopg://studyflow_user:your_password@localhost:5432/studyflow
+SECRET_KEY=replace_with_a_random_secret
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
----
+- `DATABASE_URL` — строка подключения к вашей базе PostgreSQL. Пример использует драйвер `psycopg`; схема URL должна соответствовать установленному драйверу.
+- `SECRET_KEY` — случайный секрет для подписи JWT.
+- `ALGORITHM` — алгоритм подписи токенов.
+- `ACCESS_TOKEN_EXPIRE_MINUTES` — срок действия токена в минутах.
 
-# Run
+Сгенерировать секрет можно командой:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Замените примеры реальными локальными значениями. Не добавляйте `.env` в Git и не переносите секреты backend в frontend.
+
+Создайте базу и пользователя PostgreSQL, соответствующих `DATABASE_URL`, затем примените миграции:
+
+```bash
+alembic upgrade head
+```
+
+### 4. Запустите backend
+
+Из корня проекта с активированным виртуальным окружением:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Swagger documentation
+- API: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
+Оставьте этот терминал работающим.
+
+### 5. Запустите frontend
+
+Откройте **второй терминал** в корне проекта:
+
+```bash
+cd frontend
+npm install
+npm run dev
 ```
-http://127.0.0.1:8000/docs
+
+Откройте [http://127.0.0.1:5173](http://127.0.0.1:5173).
+
+> Команды `npm` нужно выполнять внутри папки `frontend`, где находится `package.json`. Python-окружение `.venv` для запуска frontend не требуется.
+
+### Как frontend подключается к backend
+
+```text
+Браузер → Vite :5173 → /api/* → FastAPI :8000 → PostgreSQL
 ```
 
----
+Frontend отправляет запросы на `/api`. Vite удаляет этот префикс и перенаправляет запросы на `http://127.0.0.1:8000`. Например, `/api/courses/` превращается в `/courses/` на backend.
 
-# Current Status
+Если backend работает по другому адресу, создайте `frontend/.env.local` на основе `frontend/.env.example`:
 
-✅ Backend completed
+```dotenv
+API_TARGET=http://127.0.0.1:8000
+```
 
-- Authentication
-- Authorization
-- CRUD operations
-- Role permissions
-- Course enrollment
-- PostgreSQL integration
-- Swagger documentation
+После изменения адреса перезапустите `npm run dev`. Для этого способа подключения менять CORS в backend не нужно.
 
-🚧 Frontend is currently under development.
+## Первый запуск
 
----
+1. Запустите backend и frontend в двух терминалах.
+2. Создайте аккаунт с ролью преподавателя.
+3. Добавьте первый курс: название и описание.
+4. Выйдите и создайте отдельный аккаунт студента.
+5. Откройте курс в каталоге и запишитесь на него.
+6. Проверьте раздел «Моё обучение».
 
-# Future Improvements
+Каталог показывает данные из вашей базы. На новой базе он будет пустым — демонстрационные курсы автоматически не создаются.
 
-- React + TypeScript frontend
-- Responsive UI
-- Docker
-- Unit tests
-- CI/CD
-- File upload
-- Course thumbnails
+## API
 
----
+Точные схемы запросов и ответов доступны в Swagger UI запущенного backend.
 
+### Авторизация и профиль
+
+| Метод | Endpoint | Назначение |
+| --- | --- | --- |
+| `POST` | `/auth/register` | Регистрация пользователя |
+| `POST` | `/auth/login` | Получение JWT |
+| `GET` | `/me/` | Текущий профиль |
+| `PATCH` | `/me/` | Обновление профиля |
+| `DELETE` | `/me/` | Удаление аккаунта |
+
+Вход принимает `application/x-www-form-urlencoded` с полями `username` и `password`. Регистрация принимает JSON с полями `username`, `full_name`, `password` и `role` (`student` или `teacher`).
+
+Защищённые запросы передают токен в заголовке:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+Frontend хранит токен в `sessionStorage` текущей вкладки и удаляет его при выходе или ответе `401` от защищённого endpoint.
+
+### Курсы
+
+| Метод | Endpoint | Назначение |
+| --- | --- | --- |
+| `GET` | `/courses/` | Все курсы |
+| `GET` | `/courses/title/?title=Python` | Поиск по названию |
+| `GET` | `/courses/my` | Курсы текущего преподавателя |
+| `GET` | `/courses/{course_id}` | Информация о курсе |
+| `POST` | `/courses/` | Создание курса преподавателем |
+| `PATCH` | `/courses/{course_id}` | Изменение собственного курса |
+| `DELETE` | `/courses/{course_id}` | Удаление собственного курса |
+
+### Запись на обучение
+
+| Метод | Endpoint | Назначение |
+| --- | --- | --- |
+| `POST` | `/me/courses/` | Запись студента на курс |
+| `GET` | `/me/courses` | Курсы, на которые записан студент |
+| `DELETE` | `/me/courses/{course_id}` | Выход из курса |
+| `GET` | `/courses/{course_id}/students` | Участники курса |
+
+## Проверки и сборка frontend
+
+Выполняйте команды из папки `frontend`:
+
+```bash
+# Тесты API-клиента
+npm test
+
+# Проверка TypeScript и production-сборка
+npm run build
+
+# Локальный просмотр сборки
+npm run preview
+```
+
+Готовая сборка сохраняется в `frontend/dist`. Тесты API-клиента проверяют формирование запросов и обработку ошибок с подменёнными ответами сервера; они не заменяют интеграционные проверки с FastAPI и PostgreSQL.
+
+При размещении production-сборки настройте веб-сервер для раздачи `dist` и проксирования `/api/*` на backend с удалением префикса `/api`. Переменная `API_TARGET` настраивает сервер Vite и сама по себе не настраивает production-хостинг.
+
+## Частые проблемы
+
+### `ENOENT: Could not read package.json`
+
+Команда `npm` запущена не из папки frontend. Из корня проекта выполните:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Если папки `frontend` нет, сначала скопируйте её в корень проекта.
+
+### `http proxy error` и `ECONNREFUSED 127.0.0.1:8000`
+
+Frontend работает, но не может подключиться к backend. Проверьте, что backend запущен в отдельном терминале:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Откройте [Swagger UI](http://127.0.0.1:8000/docs). Если страница не открывается, изучите ошибку в терминале backend. Если сервер использует другой адрес или порт, укажите его в `frontend/.env.local`.
+
+### Backend не запускается или сообщает об ошибке базы данных
+
+Проверьте:
+
+- активировано ли Python-окружение и установлены ли зависимости;
+- существует ли `.env` в корне проекта и заполнены ли все переменные;
+- запущен ли PostgreSQL;
+- верны ли имя базы, пользователь, пароль и драйвер в `DATABASE_URL`;
+- применены ли миграции командой `alembic upgrade head`.
+
+### Порт `5173` занят
+
+Остановите ранее запущенный frontend сочетанием `Ctrl+C` в его терминале, затем повторите `npm run dev`. В конфигурации используется фиксированный порт: Vite не переключается на следующий автоматически.
+
+### Сессия истекла
+
+Войдите повторно. Срок действия JWT задаётся переменной `ACCESS_TOKEN_EXPIRE_MINUTES` в backend.
+
+## Направления развития
+
+Возможные следующие этапы проекта:
+
+- разделы, уроки и материалы внутри курсов;
+- загрузка обложек и файлов;
+- задания и отслеживание прогресса;
+- интеграционные и браузерные тесты;
+- Docker и автоматизация CI/CD.
+
+Эти пункты описывают будущие улучшения, а не функции текущей версии.
